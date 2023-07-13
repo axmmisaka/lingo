@@ -86,6 +86,33 @@ impl InitArgs {
 }
 
 #[derive(Subcommand, Debug)]
+pub enum ToolchainCommand {
+    /// Installs Lingua Franca Toolchain. If VERSION is not supplied or is `stable`, the latest stable build will be installed. 
+    /// If VERSION is supplied in the form of `v0.0.0`, then the corresponding stable build will be installed.
+    /// If VERSION is supplied in the form of `yyyyMMdd` or `nightly`, then the corresponding nightly build or the latest nightly build will be used.
+    Install { version: Option<String> },
+    /// Uninstalls the Lingua Franca Toolchain with VERSION.
+    Uninstall { version: String },
+    /// Switch to using Lingua Franca Toolchain with VERSION.
+    Use { version: String },
+    /// Utilities that operates on downloaded Lingua Franca Toolchain Cache.
+    #[clap(subcommand)]
+    Cache(CacheCommand),
+    /// List downloaded Lingua Franca Toolchain versions.
+    List,
+    /// List available Lingua Franca Toolchain version.
+    ListRemote,
+}
+
+#[derive(Subcommand, Debug)]
+pub enum CacheCommand {
+    /// Display path to the cache directory for lingo toolchain.
+    Dir,
+    /// Empty cache directory for lingo toolchain.
+    Purge,
+}
+
+#[derive(Subcommand, Debug)]
 pub enum Command {
     /// initializing a lingua-franca project
     Init(InitArgs),
@@ -101,6 +128,10 @@ pub enum Command {
 
     /// removes build artifacts
     Clean,
+
+    /// Utilities that installs the Lingua Franca toolchain. 
+    #[clap(subcommand)]
+    Toolchain(ToolchainCommand),
 }
 
 #[derive(Parser)]
